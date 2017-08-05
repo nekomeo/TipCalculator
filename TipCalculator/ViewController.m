@@ -29,6 +29,9 @@
     
     self.billAmountTextField.delegate = self;
     self.tipAmountTextField.delegate = self;
+    
+    UITapGestureRecognizer *tapped = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(screenWasTapped:)];
+    [self.view addGestureRecognizer:tapped];
 }
 
 
@@ -58,11 +61,11 @@
 
 - (IBAction)tipSlider:(UISlider *)sender
 {
-    float billAmount = [self.billAmountTextField.text floatValue];
-    float tip = (billAmount * sender.value) / 100;
+    self.billAmount = [self.billAmountTextField.text floatValue];
+    self.customTip = (self.billAmount * sender.value) / 100;
     
-    NSString *tipFormatted = [NSString stringWithFormat:@"%.2f", tip];
-    self.tipAmountLabel.text = [@"$" stringByAppendingString:tipFormatted];
+    NSString *tipFormatted = [NSString stringWithFormat:@"%.2f", self.customTip];
+    self.tipAmountLabel.text = [@"Tip Amount: $" stringByAppendingString:tipFormatted];
     self.tipPercentLabel.text = [[NSString stringWithFormat:@"%.2f", sender.value] stringByAppendingString:@"%"];
 }
 
@@ -70,7 +73,8 @@
 {
     self.billAmount = [self.billAmountTextField.text floatValue];
     
-    if (rate == 0) {
+    if (rate == 0)
+    {
         rate = 0.15;
     }
     
@@ -83,6 +87,11 @@
 {
     self.customTip = [self.tipAmountTextField.text floatValue];
     [self calculateTipAtRate:self.customTip/100];
+}
+
+- (void)screenWasTapped:(UITapGestureRecognizer *)sender
+{
+    [self.view endEditing:YES];
 }
 
 @end
